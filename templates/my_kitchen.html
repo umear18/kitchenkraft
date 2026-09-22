@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}My Kitchen — Kitchen Kraft{% endblock %}
+{% block header_title %}My Kitchen{% endblock %}
+{% block content %}
+
+<div class="kitchen-header">
+  <div>
+    <h1>🧺 My Kitchen</h1>
+    <p>Select the ingredients you have at home. We'll show you delicious dishes you can make!</p>
+  </div>
+  <div style="font-size:2.4rem;">🥕🍅🧅</div>
+</div>
+
+<form method="POST" id="kitchenForm">
+  {% for category, items in grouped.items() %}
+  <div class="ing-category">
+    <h3>{{ category }}</h3>
+    <div class="ing-list">
+      {% for ing in items %}
+      <label class="ing-chip {{ 'checked' if ing['ingredient_id'] in selected }}">
+        <input type="checkbox" name="ingredients" value="{{ ing['ingredient_id'] }}"
+               {{ 'checked' if ing['ingredient_id'] in selected }}
+               onchange="this.closest('label').classList.toggle('checked', this.checked)">
+        {{ ing['emoji'] }} {{ ing['ingredient_name'] }}
+      </label>
+      {% endfor %}
+    </div>
+  </div>
+  {% endfor %}
+
+  <div class="sticky-footer">
+    <span id="countLabel">{{ selected|length }} ingredients selected</span>
+    <button type="submit" class="btn btn-primary">🍳 Find What I Can Cook →</button>
+  </div>
+</form>
+
+{% endblock %}
+{% block scripts %}
+<script>
+  const form = document.getElementById('kitchenForm');
+  const countLabel = document.getElementById('countLabel');
+  form.addEventListener('change', () => {
+    const n = form.querySelectorAll('input[type=checkbox]:checked').length;
+    countLabel.textContent = n + ' ingredients selected';
+  });
+</script>
+{% endblock %}

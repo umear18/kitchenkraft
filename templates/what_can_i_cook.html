@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}What Can I Cook? — Kitchen Kraft{% endblock %}
+{% block header_title %}What Can I Cook?{% endblock %}
+{% block content %}
+
+<h1 style="margin-bottom:4px;">🍳 What Can I Cook?</h1>
+<p style="color:var(--text-light); margin-bottom:18px;">Recipes matched against the {{ my_ingredients|length }} ingredient(s) in your kitchen.</p>
+
+{% if not my_ingredients %}
+  <div class="empty-state panel">
+    <div class="emoji">🧺</div>
+    <p>Your kitchen is empty. <a href="{{ url_for('my_kitchen') }}" style="color:var(--green-dark); font-weight:700;">Add some ingredients</a> to get recipe matches.</p>
+  </div>
+{% else %}
+
+<div class="panel" style="margin-bottom:20px;">
+  <strong>Your Ingredients ({{ my_ingredients|length }})</strong>
+  <div class="ing-list" style="margin-top:10px;">
+    {% for i in my_ingredients %}
+      <span class="ing-chip checked">{{ i['emoji'] }} {{ i['ingredient_name'] }}</span>
+    {% endfor %}
+  </div>
+</div>
+
+<form method="GET" id="filterForm">
+  <div class="filter-row">
+    {% for mt in ['All','Breakfast','Lunch','Dinner','Snack','Dessert'] %}
+      <button type="submit" name="meal_type" value="{{ mt }}" class="filter-pill {{ 'active' if meal_type==mt }}">{{ mt }}</button>
+    {% endfor %}
+  </div>
+  <div class="filter-row">
+    {% for ft in ['All','Veg','Non-Veg','Seafood'] %}
+      <button type="submit" name="food_type" value="{{ ft }}" class="filter-pill {{ 'active' if food_type==ft }}">{{ ft }}</button>
+    {% endfor %}
+  </div>
+</form>
+
+<div class="section-title"><h2>We found {{ results|length }} recipe(s) you can make!</h2></div>
+
+{% if results %}
+<div class="recipe-grid">
+  {% for r in results %}
+  {% set recipe = r['recipe'] %}
+  <a class="recipe-card" href="{{ url_for('recipe_details', recipe_id=recipe['recipe_id']) }}">
+    <div class="recipe-img food-emoji-bg">
+      <span class="match-badge {{ 'match-high' if r['match_pct']>=90 else ('match-mid' if r['match_pct']>=60 else 'match-low') }}">{{ r['match_pct'] }}% Match</span>
+      {{ recipe_emoji(recipe) }}
+    </div>
+    <div class="recipe-body">
+      <div class="recipe-name">{{ recipe['recipe_name'] }}</div>
+      <div class="recipe-meta">
+        <span>⏱ {{ recipe['cooking_time'] }} mins</span>
+        <span>{{ '🌱' if recipe['food_type']=='Veg' else '🍗' }} {{ recipe['food_type'] }}</span>
+        <span>{{ r['have_count'] }}/{{ r['total_count'] }} ingredients</span>
+      </div>
+      {% if r['missing'] %}
+        <div class="missing-tag">Missing: {{ r['missing']|join(', ') }}</div>
+      {% endif %}
+      <div class="tag-row">
+        {% for t in recipe['tags'].split(',') %}<span class="tag-chip">{{ t }}</span>{% endfor %}
+      </div>
+    </div>
+  </a>
+  {% endfor %}
+</div>
+{% else %}
+  <div class="empty-state panel">
+    <div class="emoji">🤔</div>
+    <p>No recipes match your current ingredients and filters yet. Try adding a few more ingredients in My Kitchen.</p>
+  </div>
+{% endif %}
+
+<div class="pro-tip" style="margin-top:22px;">
+  💡 <strong>Did you know?</strong> The match percentage is calculated as (ingredients you have ÷ ingredients the recipe needs) × 100.
+</div>
+
+{% endif %}
+{% endblock %}

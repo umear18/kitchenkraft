@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Dish Ready — Kitchen Kraft{% endblock %}
+{% block header_title %}Dish Ready{% endblock %}
+{% block content %}
+
+<div class="ready-wrap panel">
+  <div class="ready-emoji">🎉</div>
+  <h1>Your Dish is Ready!</h1>
+  <p style="color:var(--text-light);">You cooked <strong>{{ recipe['recipe_name'] }}</strong> with what you had in your kitchen. Great job, Chef! ❤️</p>
+
+  <div class="stat-row" style="justify-content:center;">
+    <div class="stat-box"><div class="label">Time Taken</div><div class="value">{{ recipe['cooking_time'] }} mins</div></div>
+    <div class="stat-box"><div class="label">Calories (approx)</div><div class="value">{{ nutrition['calories']|int }} kcal</div></div>
+    <div class="stat-box"><div class="label">Mood</div><div class="value">Happy Chef! 😊</div></div>
+  </div>
+
+  <div class="ready-actions">
+    <a class="btn btn-outline" href="{{ url_for('favorites') }}">💾 Save Recipe</a>
+    <a class="btn btn-outline" href="{{ url_for('history') }}">📜 View History</a>
+    <a class="btn btn-primary" href="{{ url_for('what_can_i_cook') }}">🍳 Cook Something Else</a>
+  </div>
+</div>
+
+{% endblock %}

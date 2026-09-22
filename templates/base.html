@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Kitchen Kraft{% endblock %}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍳</text></svg>">
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="logo">🍳&nbsp;<span><span class="kitchen">Kitchen</span> <span class="kraft">Kraft</span><span class="logo-tag">Cook More With What You Have.</span></span></div>
+    <a class="nav-link {{ 'active' if request.endpoint == 'home' }}" href="{{ url_for('home') }}"><span class="icon">🏠</span> Home</a>
+    <a class="nav-link {{ 'active' if request.endpoint == 'my_kitchen' }}" href="{{ url_for('my_kitchen') }}"><span class="icon">🧺</span> My Kitchen</a>
+    <a class="nav-link {{ 'active' if request.endpoint == 'what_can_i_cook' }}" href="{{ url_for('what_can_i_cook') }}"><span class="icon">🍳</span> What Can I Cook?</a>
+    <a class="nav-link {{ 'active' if request.endpoint == 'favorites' }}" href="{{ url_for('favorites') }}"><span class="icon">❤️</span> Favorites</a>
+    <a class="nav-link {{ 'active' if request.endpoint == 'history' }}" href="{{ url_for('history') }}"><span class="icon">🍽️</span> Cooking History</a>
+    <a class="nav-link {{ 'active' if request.endpoint == 'profile' }}" href="{{ url_for('profile') }}"><span class="icon">👤</span> Profile</a>
+    <a class="nav-link {{ 'active' if request.endpoint == 'help_page' }}" href="{{ url_for('help_page') }}"><span class="icon">🆘</span> Help</a>
+    <div class="sidebar-footer">Kitchen Kraft v1.0<br>Phase‑1 Prototype</div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <strong>{% block header_title %}Kitchen Kraft{% endblock %}</strong>
+      <div class="search-box"><input type="text" placeholder="Search recipes..."></div>
+      <div class="topbar-user">
+        {% if user %}
+        <div class="avatar">{{ user['name'][0]|upper }}</div>
+        <a class="logout-link" href="{{ url_for('logout') }}">Logout</a>
+        {% endif %}
+      </div>
+    </header>
+
+    <div class="content">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+</div>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

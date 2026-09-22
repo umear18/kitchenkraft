@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Cooking History — Kitchen Kraft{% endblock %}
+{% block header_title %}Cooking History{% endblock %}
+{% block content %}
+
+<h1 style="margin-bottom:16px;">🍽️ Cooking History</h1>
+
+{% if rows %}
+<table class="list-table">
+  <tr><th>Recipe</th><th>Category</th><th>Date Cooked</th><th>Rating</th></tr>
+  {% for row in rows %}
+  <tr>
+    <td><a href="{{ url_for('recipe_details', recipe_id=row['recipe_id']) }}" style="font-weight:700; color:var(--green-dark);">{{ row['recipe_name'] }}</a></td>
+    <td>{{ row['category'] }}</td>
+    <td>{{ row['cooked_date'] }}</td>
+    <td>{{ '⭐' * row['rating'] if row['rating'] else '—' }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+<div class="empty-state panel">
+  <div class="emoji">🍳</div>
+  <p>You haven't cooked anything yet. Head to "What Can I Cook?" to get started.</p>
+</div>
+{% endif %}
+
+{% endblock %}

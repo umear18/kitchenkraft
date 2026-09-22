@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}{{ recipe['recipe_name'] }} — Kitchen Kraft{% endblock %}
+{% block header_title %}Recipe Details{% endblock %}
+{% block content %}
+
+<a href="{{ url_for('what_can_i_cook') }}" style="color:var(--text-light); font-size:0.85rem;">&larr; Back to Recipes</a>
+
+<div class="recipe-hero" style="margin-top:14px;">
+  <div class="recipe-hero-img food-emoji-bg">
+    <span class="match-badge {{ 'match-high' if match_pct>=90 else ('match-mid' if match_pct>=60 else 'match-low') }}">{{ match_pct }}% Match</span>
+    <form method="POST" action="{{ url_for('toggle_favorite', recipe_id=recipe['recipe_id']) }}" style="position:absolute; top:10px; right:10px;">
+      <button class="fav-badge" type="submit">{{ '❤️' if is_favorite else '🤍' }}</button>
+    </form>
+    {{ recipe_emoji(recipe) }}
+  </div>
+  <div>
+    <div class="recipe-title">{{ recipe['recipe_name'] }}</div>
+    <div class="recipe-info-pills">
+      <span class="info-pill">⏱ {{ recipe['cooking_time'] }} mins</span>
+      <span class="info-pill">👩‍🍳 {{ recipe['difficulty'] }}</span>
+      <span class="info-pill">{{ '🌱' if recipe['food_type']=='Veg' else '🍗' }} {{ recipe['food_type'] }}</span>
+      <span class="info-pill">🍽 Serves {{ recipe['servings'] }}</span>
+    </div>
+    <p style="color:var(--text-light);">{{ recipe['description'] }}</p>
+    <div class="stat-row">
+      <div class="stat-box"><div class="label">Calories</div><div class="value">{{ nutrition['calories']|int }} kcal</div></div>
+      <div class="stat-box"><div class="label">Protein</div><div class="value">{{ nutrition['protein']|int }} g</div></div>
+      <div class="stat-box"><div class="label">Carbs</div><div class="value">{{ nutrition['carbohydrates']|int }} g</div></div>
+    </div>
+    <form method="POST" action="{{ url_for('cook_recipe', recipe_id=recipe['recipe_id']) }}">
+      <button class="btn btn-primary" type="submit">🍳 Cook This Now</button>
+    </form>
+  </div>
+</div>
+
+<div class="two-col">
+  <div class="panel">
+    <h3 style="margin-bottom:12px;">🧺 Ingredients ({{ ingredients|length }} items)</h3>
+    {% for ing in ingredients %}
+    <div class="ingredient-row">
+      <span class="{{ 'have' if ing['ingredient_id'] in my_ids else 'missing' }}">
+        {{ '✅' if ing['ingredient_id'] in my_ids else '❌' }} {{ ing['emoji'] }} {{ ing['ingredient_name'] }}
+      </span>
+      <span>{{ ing['quantity'] }}</span>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="panel">
+    <h3 style="margin-bottom:12px;">👩‍🍳 Steps</h3>
+    <div class="step-list">
+      {% for step in steps %}
+      <div class="step-item">
+        <div class="step-num">{{ loop.index }}</div>
+        <div>{{ step }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<div class="panel" style="margin-bottom:20px;">
+  <h3 style="margin-bottom:8px;">🥗 Nutrition — Per Serving (estimated)</h3>
+  <table class="nutrition-table">
+    <tr><td>🔥 Calories</td><td>{{ nutrition['calories']|int }} kcal</td></tr>
+    <tr><td>💪 Protein</td><td>{{ nutrition['protein']|int }} g</td></tr>
+    <tr><td>🍚 Carbohydrates</td><td>{{ nutrition['carbohydrates']|int }} g</td></tr>
+    <tr><td>🥑 Fat</td><td>{{ nutrition['fat']|int }} g</td></tr>
+    <tr><td>🌾 Fibre</td><td>{{ nutrition['fibre']|int }} g</td></tr>
+    <tr><td>🍬 Sugar</td><td>{{ nutrition['sugar']|int }} g</td></tr>
+    <tr><td>🧂 Sodium</td><td>{{ nutrition['sodium']|int }} mg</td></tr>
+  </table>
+  <div class="pro-tip"><strong>Note:</strong> Nutrition values are estimated from standard ingredient quantities and may vary based on exact brands and portion sizes.</div>
+</div>
+
+{% if similar %}
+<div class="section-title"><h2>✨ You Might Also Like</h2></div>
+<div class="recipe-grid">
+  {% for s in similar %}
+  <a class="recipe-card" href="{{ url_for('recipe_details', recipe_id=s['recipe_id']) }}">
+    <div class="recipe-img food-emoji-bg">{{ recipe_emoji(s) }}</div>
+    <div class="recipe-body">
+      <div class="recipe-name">{{ s['recipe_name'] }}</div>
+      <div class="recipe-meta"><span>⏱ {{ s['cooking_time'] }} mins</span><span>{{ s['food_type'] }}</span></div>
+    </div>
+  </a>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% endblock %}

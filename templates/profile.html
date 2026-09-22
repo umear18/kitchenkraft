@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Profile — Kitchen Kraft{% endblock %}
+{% block header_title %}Profile{% endblock %}
+{% block content %}
+
+<div class="profile-card">
+  <div class="profile-avatar">{{ user['name'][0]|upper }}</div>
+  <div>
+    <h2>{{ user['name'] }}</h2>
+    <p style="color:var(--text-light); font-size:0.9rem;">{{ user['email'] }}</p>
+    <div class="stat-pill-row">
+      <span class="stat-pill">{{ '🌱' if user['food_preference']=='Veg' else '🍗' }} {{ user['food_preference'] }}</span>
+      <span class="stat-pill">❤️ {{ fav_count }} Favorites</span>
+      <span class="stat-pill">🍽️ {{ history_count }} Cooked</span>
+    </div>
+  </div>
+</div>
+
+<div class="panel" style="margin-bottom:20px;">
+  <h3 style="margin-bottom:14px;">⚙️ Settings</h3>
+  <div class="ingredient-row"><span>🔔 Notifications</span><span>On</span></div>
+  <div class="ingredient-row"><span>🍽️ Food Preference</span><span>{{ user['food_preference'] }}</span></div>
+  <div class="ingredient-row"><span>🌐 Language</span><span>English</span></div>
+  <div class="ingredient-row"><span>🌗 Theme</span><span>Light</span></div>
+  <div class="ingredient-row"><span>🔒 Password</span><span><a href="#" style="color:var(--green-dark); font-weight:600;">Change</a></span></div>
+</div>
+
+{% endblock %}

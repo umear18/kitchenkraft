@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Favorites — Kitchen Kraft{% endblock %}
+{% block header_title %}Favorites{% endblock %}
+{% block content %}
+
+<h1 style="margin-bottom:16px;">❤️ Favorites</h1>
+
+{% if recipes %}
+<div class="recipe-grid">
+  {% for r in recipes %}
+  <a class="recipe-card" href="{{ url_for('recipe_details', recipe_id=r['recipe_id']) }}">
+    <div class="recipe-img food-emoji-bg">{{ recipe_emoji(r) }}</div>
+    <div class="recipe-body">
+      <div class="recipe-name">{{ r['recipe_name'] }}</div>
+      <div class="recipe-meta"><span>⏱ {{ r['cooking_time'] }} mins</span><span>{{ r['calories']|int }} kcal</span></div>
+    </div>
+  </a>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state panel">
+  <div class="emoji">💔</div>
+  <p>You haven't saved any favorites yet. Tap the heart icon on a recipe to save it here.</p>
+</div>
+{% endif %}
+
+{% endblock %}

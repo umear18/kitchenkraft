@@ -1,0 +1,11 @@
+// Kitchen Kraft — small progressive-enhancement script.
+// Auto-dismiss flash messages after a few seconds.
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".flash").forEach((el) => {
+    setTimeout(() => {
+      el.style.transition = "opacity .4s ease";
+      el.style.opacity = "0";
+      setTimeout(() => el.remove(), 400);
+    }, 3500);
+  });
+});
